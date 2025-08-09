@@ -1,5 +1,6 @@
 #include "main.h"
 #include "lemlib/api.hpp" // IWYU pragma: keep
+#include "pros/imu.hpp"
 #include "robot-config.h"
 /**
  * A callback function for LLEMU's center button.
@@ -16,7 +17,10 @@
  */
 void initialize() {
   pros::lcd::initialize();
-  pros::lcd::set_text(1, "Hello PROS User!");
+  imu.reset();
+  while(imu.is_calibrating()) pros::delay(10);
+  chassis.setPose(0, 0, 0);
+  pros::lcd::set_text(1, "Hello Potato User!");
 }
 
 /**
