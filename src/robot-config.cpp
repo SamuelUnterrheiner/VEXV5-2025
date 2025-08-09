@@ -11,40 +11,40 @@
 
 
 // left motor group
-pros::MotorGroup left_motor_group({-1, 2, -3}, pros::MotorGears::blue);
+pros::MotorGroup leftMotor({-1, 2, -3}, pros::MotorGears::green);
 // right motor group
-pros::MotorGroup right_motor_group({4, -5, 6}, pros::MotorGears::green);
+pros::MotorGroup rightMotor({4, -5, 6}, pros::MotorGears::green);
 
 // drivetrain settings
-lemlib::Drivetrain drivetrain(&left_motor_group, // left motor group
-                              &right_motor_group, // right motor group
-                              10, // 10 inch track width
-                              lemlib::Omniwheel::NEW_4, // using new 4" omnis
-                              360, // drivetrain rpm is 360
+lemlib::Drivetrain drivetrain(&leftMotor, // left motor group
+                              &rightMotor, // right motor group
+                              13, // 13 inch track width
+                              3.25, // using new 3.25" omnis
+                              200, // rpm (green)
                               2 // horizontal drift is 2 (for now)
 );
 
 // imu
 pros::Imu imu(10);
 // horizontal tracking wheel encoder
-pros::Rotation horizontal_encoder(20);
+pros::Rotation horizontalEncoder(20);
 // vertical tracking wheel encoder
-pros::adi::Encoder vertical_encoder('C', 'D', true);
+pros::adi::Encoder verticalEncoder('C', 'D', true);
 // horizontal tracking wheel
-lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -5.75);
+lemlib::TrackingWheel horizontal(&horizontalEncoder, lemlib::Omniwheel::NEW_275, -5.75);
 // vertical tracking wheel
-lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_275, -2.5);
+lemlib::TrackingWheel vertical(&verticalEncoder, lemlib::Omniwheel::NEW_275, -2.5);
 
 // odometry settings
-lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel 1, set to null
+lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel 1, set to null
                             nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
-                            &horizontal_tracking_wheel, // horizontal tracking wheel 1
+                            &horizontal, // horizontal tracking wheel 1
                             nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
                             &imu // inertial sensor
 );
 
 // lateral PID controller
-lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
+lemlib::ControllerSettings lateralController(10, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               3, // derivative gain (kD)
                                               3, // anti windup
@@ -56,7 +56,7 @@ lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
 );
 
 // angular PID controller
-lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
+lemlib::ControllerSettings angularController(2, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               10, // derivative gain (kD)
                                               3, // anti windup
@@ -69,8 +69,8 @@ lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
 
 // create the chassis
 lemlib::Chassis chassis(drivetrain, // drivetrain settings
-                        lateral_controller, // lateral PID settings
-                        angular_controller, // angular PID settings
+                        lateralController, // lateral PID settings
+                        angularController, // angular PID settings
                         sensors // odometry sensors
 );
 
@@ -90,23 +90,23 @@ void initialize() {
         }
     });
     // input curve for throttle input during driver control
-    lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
+    lemlib::ExpoDriveCurve throttleCurve(3, // joystick deadband out of 127
                                          10, // minimum output where drivetrain will move out of 127
                                          1.019 // expo curve gain
     );
     
     // input curve for steer input during driver control
-    lemlib::ExpoDriveCurve steer_curve(3, // joystick deadband out of 127
+    lemlib::ExpoDriveCurve steerCurve(3, // joystick deadband out of 127
                                       10, // minimum output where drivetrain will move out of 127
                                       1.019 // expo curve gain
     );
     
     // create the chassis
     lemlib::Chassis chassis(drivetrain,
-                            lateral_controller,
-                            angular_controller,
+                            lateralController,
+                            angularController,
                             sensors,
-                            &throttle_curve, 
-                            &steer_curve
+                            &throttleCurve, 
+                            &steerCurve
     );
 }
