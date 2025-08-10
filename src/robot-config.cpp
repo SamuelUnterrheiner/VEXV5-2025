@@ -2,13 +2,8 @@
 #include "lemlib/chassis/trackingWheel.hpp"
 #include "main.h"
 #include "pros/abstract_motor.hpp"
-// #include "pros/adi.hpp"
 #include "pros/imu.hpp"
-#include "pros/misc.h"
-#include "pros/misc.hpp"
 #include "pros/motor_group.hpp"
-// #include "pros/motors.hpp"
-// #include "pros/rtos.hpp"
 
 
 // left motor group
@@ -27,14 +22,16 @@ lemlib::Drivetrain drivetrain(&leftMotor, // left motor group
 
 // imu
 pros::Imu imu(10);
-// horizontal tracking wheel encoder
-pros::Rotation horizontalEncoder(20);
-// vertical tracking wheel encoder
-pros::adi::Encoder verticalEncoder('C', 'D', true);
+
+// Tracking wheels
+pros::Rotation horizontalEncoder(20); // Positive means that the encoder is forwards
+pros::Rotation verticalEncoder(-19); // Negative means that the encoder is backwards
+
+// Distance is the distance from the center of the robot to the tracking wheel
 // horizontal tracking wheel
 lemlib::TrackingWheel horizontal(&horizontalEncoder, lemlib::Omniwheel::NEW_275, -5.75);
 // vertical tracking wheel
-lemlib::TrackingWheel vertical(&verticalEncoder, lemlib::Omniwheel::NEW_275, -2.5);
+lemlib::TrackingWheel vertical(&verticalEncoder, lemlib::Omniwheel::NEW_275, -2.5); 
 
 // odometry settings
 lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel 1, set to null
@@ -45,6 +42,7 @@ lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel 1, set to null
 );
 
 // lateral PID controller
+// PID for going forward/backward
 lemlib::ControllerSettings lateralController(10, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               3, // derivative gain (kD)
@@ -56,8 +54,9 @@ lemlib::ControllerSettings lateralController(10, // proportional gain (kP)
                                               20 // maximum acceleration (slew)
                                             );
                                             
-                                            // angular PID controller
-                                            lemlib::ControllerSettings angularController(2, // proportional gain (kP)
+// angular PID controller
+// PID for turning
+lemlib::ControllerSettings angularController(2, // proportional gain (kP)
                                                 0, // integral gain (kI)
                                                 10, // derivative gain (kD)
                                                 3, // anti windup
@@ -89,19 +88,3 @@ lemlib::Chassis chassis(drivetrain,
                         &steerCurve
 );
 // initialize function. Runs on program startup
-void initialize() {
-    pros::lcd::initialize(); // initialize brain screen
-    chassis.calibrate(); // calibrate sensors
-    // print position to brain screen
-    pros::Task screen_task([&]() {
-        while (true) {
-            // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-            // delay to save resources
-            pros::delay(20);
-        }
-    });
-    
-}

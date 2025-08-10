@@ -16,11 +16,21 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  pros::lcd::initialize();
-  imu.reset();
-  while(imu.is_calibrating()) pros::delay(10);
-  chassis.setPose(0, 0, 0);
-  pros::lcd::set_text(1, "Hello Potato User!");
+  
+  pros::lcd::initialize(); // initialize brain screen
+  chassis.calibrate(); // calibrate sensors
+  // print position to brain screen
+  pros::Task screen_task([&]() {
+    while (true) {
+      // print robot location to the brain screen
+      pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+      pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+      pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+      // delay to save resources
+      pros::delay(20);
+    }
+  });
+    
 }
 
 /**
@@ -52,7 +62,9 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() { }
+void autonomous() {
+  chassis.setPose(10, 10, 0);
+}
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
