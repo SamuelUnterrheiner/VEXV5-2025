@@ -62,8 +62,10 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+ASSET(pathjerryio_txt)
 void autonomous() {
-  chassis.setPose(10, 10, 0);
+  chassis.setPose(0, 0, 0);
+  chassis.follow(pathjerryio_txt, 15, 6000);
 }
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
