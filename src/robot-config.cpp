@@ -7,14 +7,14 @@
 
 
 // left motor group
-pros::MotorGroup leftMotor({-1, 2, -3}, pros::MotorGears::green);
+pros::MotorGroup leftMotors({-1, 2, -3}, pros::MotorGears::green);
 // right motor group
-pros::MotorGroup rightMotor({4, -5, 6}, pros::MotorGears::green);
+pros::MotorGroup rightMotors({4, -5, 6}, pros::MotorGears::green);
 
 // drivetrain settings
-lemlib::Drivetrain drivetrain(&leftMotor, // left motor group
-                              &rightMotor, // right motor group
-                              13, // 13 inch track width
+lemlib::Drivetrain drivetrain(&leftMotors, // left motor group
+                              &rightMotors, // right motor group
+                              10.5, // 10.5 inch track width
                               lemlib::Omniwheel::NEW_325, // using new 3.25" omnis
                               200, // rpm (green)
                               2 // horizontal drift is 2 (for now)
@@ -29,9 +29,9 @@ pros::Rotation verticalEncoder(-19); // Negative means that the encoder is backw
 
 // Distance is the distance from the center of the robot to the tracking wheel
 // horizontal tracking wheel
-lemlib::TrackingWheel horizontal(&horizontalEncoder, lemlib::Omniwheel::NEW_275, -5.75);
+lemlib::TrackingWheel horizontal(&horizontalEncoder, lemlib::Omniwheel::NEW_275, -6.5);
 // vertical tracking wheel
-lemlib::TrackingWheel vertical(&verticalEncoder, lemlib::Omniwheel::NEW_275, -2.5); 
+lemlib::TrackingWheel vertical(&verticalEncoder, lemlib::Omniwheel::NEW_275, -6.5); 
 
 // odometry settings
 lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel 1, set to null
@@ -43,25 +43,25 @@ lemlib::OdomSensors sensors(&vertical, // vertical tracking wheel 1, set to null
 
 // lateral PID controller
 // PID for going forward/backward
-lemlib::ControllerSettings lateralController(10, // proportional gain (kP)
+lemlib::ControllerSettings lateralController(7, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              3, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in inches
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
-                                              500, // large error range timeout, in milliseconds
-                                              20 // maximum acceleration (slew)
+                                              25, // derivative gain (kD)
+                                              0, // anti windup
+                                              0.75, // small error range, in inches
+                                              120, // small error range timeout, in milliseconds
+                                              2.0, // large error range, in inches
+                                              450, // large error range timeout, in milliseconds
+                                              15 // maximum acceleration (slew)
                                             );
                                             
 // angular PID controller
 // PID for turning
 lemlib::ControllerSettings angularController(2, // proportional gain (kP)
                                                 0, // integral gain (kI)
-                                                10, // derivative gain (kD)
-                                                3, // anti windup
+                                                18, // derivative gain (kD)
+                                                0, // anti windup
                                                 1, // small error range, in degrees
-                                                100, // small error range timeout, in milliseconds
+                                                120, // small error range timeout, in milliseconds
                                                 3, // large error range, in degrees
                                                 500, // large error range timeout, in milliseconds
                                                 0 // maximum acceleration (slew)

@@ -8,7 +8,7 @@ extern pros::Controller controller;
 // motor groups
 extern pros::MotorGroup leftMotors;
 extern pros::MotorGroup rightMotors;
-extern pros::IMU imu;
+extern pros::Imu imu;
 extern pros::Rotation horizontalEncoder;
 extern pros::Rotation verticalEncoder;
 
