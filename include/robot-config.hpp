@@ -1,4 +1,4 @@
-#include "lemlib/lemlib.hpp"
+#include "lemlib.hpp"
 #include "lemlib/chassis/chassis.hpp"
 #include "pros/misc.hpp"
 
