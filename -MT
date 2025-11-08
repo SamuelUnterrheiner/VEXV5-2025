@@ -1,0 +1,2 @@
+arm-none-eabi-g++.exe: fatal error: input file 'bin/main.cpp.o' is the same as output file
+compilation terminated.
