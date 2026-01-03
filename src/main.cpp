@@ -7,15 +7,10 @@
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup leftMotors({11, -13, 12});
-pros::MotorGroup rightMotors({-1, 3, -2});
+pros::MotorGroup leftMotors({1, 12, 13});
+pros::MotorGroup rightMotors({-15, -14, -3});
 
-pros::Motor outake(-19);
-pros::Motor outake_control(-20);
-pros::Motor intake(16);
-
-pros::adi::Pneumatics doinker('A', true);
-pros::adi::Pneumatics thingy('C', true); // new pneumatic on port B
+pros::Motor intake(2);
 
 lemlib::Drivetrain drivetrain(
     &leftMotors,                  // left motor group
@@ -56,11 +51,11 @@ lemlib::Chassis chassis(
 void opcontrol() {
 
     while (true) {
-        int turn = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int drive = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        int drive = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int turn = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        int left = drive + turn;
-        int right = drive - turn;
+        int left = -drive + -turn;
+        int right = -drive - -turn;
 
         int leftRPM = left * 200 / 127;
         int rightRPM = right * 200 / 127;
@@ -72,30 +67,6 @@ void opcontrol() {
             intake.move_velocity(-200);
         else
             intake.move_velocity(0);
-
-        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-            outake.move_velocity(200);
-        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
-            outake.move_velocity(-200);
-        else
-            outake.move_velocity(0);
-
-        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-            outake_control.move_velocity(200);
-        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
-            outake_control.move_velocity(-200);
-        else
-            outake_control.move_velocity(0);
-
-        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_X))
-            doinker.set_value(true);
-        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y))
-            doinker.set_value(false);
-
-        if (master.get_digital(pros::E_CONTROLLER_DIGITAL_UP))
-            thingy.set_value(true); // extend
-        else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN))
-            thingy.set_value(false); // retract
 
         pros::delay(25);
     }
