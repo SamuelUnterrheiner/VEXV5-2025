@@ -20,15 +20,14 @@ lemlib::TrackingWheel vertical(
     4.0
 );
 
-// pros::IMU imu(16);
+pros::IMU imu(16);
 
 lemlib::OdomSensors sensors(
     &vertical,
     nullptr,
     &horizontal,
     nullptr,
-    // &imu
-    nullptr
+    &imu
 );
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
@@ -74,10 +73,10 @@ void initialize() {}
 void disabled() {}
 void autonomous() {
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-    // imu.reset();
-    // while (imu.is_calibrating()) {
-    //     pros::delay(10);
-    // }
+    imu.reset();
+    while (imu.is_calibrating()) {
+        pros::delay(10);
+    }
     chassis.calibrate();
     chassis.setPose(0, 0, 0);
     master.clear();
@@ -91,8 +90,13 @@ void autonomous() {
 			pros::delay(50);
         }
     }};
-    chassis.setPose(0, 0, 0);
-    chassis.moveToPoint(12, 0, 3000);
+    // chassis.setPose(0, 0, 0);
+    // chassis.moveToPose(12, 0, 0, 3000);
+    leftMotors.move_voltage(6000);
+    rightMotors.move_voltage(6000);
+    pros::delay(1000);
+    rightMotors.brake();
+    leftMotors.brake();
 }
 
 
