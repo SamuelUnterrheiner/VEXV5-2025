@@ -90,13 +90,7 @@ void autonomous() {
 			pros::delay(50);
         }
     }};
-    // chassis.setPose(0, 0, 0);
-    // chassis.moveToPose(12, 0, 0, 3000);
-    leftMotors.move_voltage(6000);
-    rightMotors.move_voltage(6000);
-    pros::delay(1000);
-    rightMotors.brake();
-    leftMotors.brake();
+    chassis.moveToPose(12, 0, 0, 3000);
 }
 
 
